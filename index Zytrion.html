@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zytrion · Operational Readiness Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1E6FE0; --blue-bright:#4D9FFF; --blue-deep:#0B3C8C;
+    --purple:#6C2BD9; --purple-deep:#4A1E96; --purple-soft:#EDE7FB;
+    --silver:#AEB6C2; --silver-light:#E7ECF2;
+    --ink:#1B2230; --ink-soft:#3A4254; --muted:#7A879B;
+    --bg:#F7F8FB; --tint:#EFF2F8; --card:#FFFFFF; --border:#E2E7EF;
+    --green:#2FA36B; --amber:#E0972B; --red:#D8453B;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6}
+  .wrap{max-width:800px;margin:0 auto;padding:0 22px 90px}
+
+  /* ── HERO (dark, branded) ── */
+  .hero{
+    margin:0 -9999px;padding:0 9999px;
+    background:
+      radial-gradient(circle at 28% 18%, rgba(77,159,255,0.22), transparent 48%),
+      radial-gradient(circle at 78% 72%, rgba(108,43,217,0.30), transparent 52%),
+      linear-gradient(160deg,#0A0E1A 0%,#0E1530 55%,#0B1024 100%);
+    position:relative;overflow:hidden;
+  }
+  .hero-inner{max-width:800px;margin:0 auto;padding:40px 0 46px;text-align:center;position:relative;z-index:1}
+  .hero img.logo{width:230px;max-width:62%;height:auto;display:block;margin:0 auto 6px;filter:drop-shadow(0 6px 24px rgba(30,111,224,0.35))}
+  .hero .kicker{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--blue-bright);text-transform:uppercase;margin-bottom:14px;opacity:.9}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(28px,4.6vw,44px);letter-spacing:-.5px;color:#fff;line-height:1.04}
+  .hero h1 .grad{background:linear-gradient(90deg,#4D9FFF,#9B6CF0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{color:#AEB9CF;font-size:14px;margin:14px auto 0;max-width:560px;font-weight:300}
+  .hero .hairline{height:1px;width:100%;background:linear-gradient(90deg,transparent,rgba(77,159,255,0.5),rgba(155,108,240,0.5),transparent);margin-top:0}
+
+  /* ── PROGRESS ── */
+  .progress{display:flex;gap:6px;margin:30px 0 38px}
+  .pstep{flex:1;height:4px;background:#E0E5EE;border-radius:2px;transition:background .3s}
+  .pstep.done{background:#B9C6E8}
+  .pstep.active{background:linear-gradient(90deg,var(--blue),var(--purple))}
+
+  /* ── STEPS ── */
+  .step{display:none;animation:fade .4s ease}.step.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .step-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:10px}
+  .step h2{font-family:'Archivo',sans-serif;font-weight:800;font-size:27px;letter-spacing:-.3px;color:var(--ink);margin-bottom:8px}
+  .step .sub{color:var(--muted);font-size:13px;margin-bottom:28px;max-width:600px}
+  .field{margin-bottom:22px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px}
+  .field .hint{font-size:12px;color:var(--muted);margin-bottom:8px;margin-top:-4px}
+  input[type=number],input[type=text],select,textarea{width:100%;background:#fff;border:1px solid var(--border);color:var(--ink);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;border-radius:7px;transition:border-color .2s,box-shadow .2s}
+  input::placeholder,textarea::placeholder{color:#AAB3C2}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,111,224,0.13)}
+  textarea{resize:vertical;min-height:72px}
+  select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C2BD9' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+  .triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .triple .col-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--purple);text-transform:uppercase;margin-bottom:6px}
+  @media(max-width:560px){.triple{grid-template-columns:1fr;gap:14px}}
+  .track-block{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--blue);padding:16px 18px;margin-bottom:14px;border-radius:7px;box-shadow:0 1px 3px rgba(27,34,48,0.05)}
+  .track-block.new{border-left-color:var(--blue)}
+  .track-block.conv{border-left-color:var(--purple)}
+  .track-block.wy{border-left-color:#1FA8C4}
+  .track-block .tname{font-weight:700;color:var(--ink);font-size:14px;margin-bottom:12px}
+  .track-block .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  /* ── BUTTONS ── */
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
+  button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;border-radius:7px;font-weight:600;font-size:14px;transition:all .2s}
+  .btn-next{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;padding:13px 32px;box-shadow:0 4px 14px rgba(76,43,180,0.30)}
+  .btn-next:hover{filter:brightness(1.08);box-shadow:0 6px 18px rgba(76,43,180,0.40)}
+  .btn-back{background:transparent;color:var(--muted);padding:13px 8px}.btn-back:hover{color:var(--ink)}
+
+  /* ── FEEDBACK ── */
+  .feedback{margin-top:22px;background:linear-gradient(135deg,rgba(30,111,224,0.06),rgba(108,43,217,0.05));border:1px solid var(--border);border-left:3px solid var(--blue);padding:15px 17px;border-radius:7px;display:none;animation:fade .35s ease}
+  .feedback.show{display:block}
+  .feedback .fbtitle{font-size:11px;font-weight:700;color:var(--blue);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+  .feedback .fbwhat{font-size:13px;color:var(--ink-soft);margin-bottom:8px}.feedback .fbwhat b{color:var(--ink)}
+  .feedback .fbnext{font-size:13px;color:var(--muted)}.feedback .fbnext b{color:var(--purple);font-weight:700}
+
+  /* ── REPORT ── */
+  .report{display:none}.report.active{display:block;animation:fade .5s ease}
+  .score-hero{text-align:center;padding:34px 20px;background:linear-gradient(135deg,rgba(30,111,224,0.08),rgba(108,43,217,0.10));border:1px solid #D9DEF0;border-radius:12px;margin-bottom:26px}
+  .score-num{font-family:'Archivo',sans-serif;font-weight:900;font-size:82px;line-height:1;background:linear-gradient(120deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .score-num .of{font-size:30px;color:var(--muted);font-weight:700;-webkit-text-fill-color:var(--muted)}
+  .score-band{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-top:8px;font-weight:600}
+  .score-cap{color:var(--ink-soft);font-size:13px;margin-top:12px;max-width:540px;margin-left:auto;margin-right:auto}
+  .rsec{margin-bottom:30px}
+  .rsec h3{font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;color:var(--ink);border-bottom:2px solid #DCE2EE;padding-bottom:8px;margin-bottom:16px}
+  .track-readout{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);padding:13px 16px;border-radius:7px;margin-bottom:10px}
+  .track-readout .tlabel{flex:0 0 130px;font-weight:600;color:var(--ink);font-size:13px}
+  .bar-wrap{flex:1;background:#EAEEF6;height:22px;border-radius:5px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:5px;transition:width .8s ease;display:flex;align-items:center;padding-left:9px}
+  .bar-fill span{font-size:11px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+  .track-readout .tval{flex:0 0 80px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+  .res-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:560px){.res-grid{grid-template-columns:1fr}}
+  .res-card{background:var(--card);border:1px solid var(--border);padding:15px 17px;border-radius:8px}
+  .res-card .rrole{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px}
+  .res-card .rnum{font-family:'Archivo',sans-serif;font-weight:900;font-size:30px;color:var(--purple);line-height:1}
+  .res-card .rnum small{font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:500}
+  .res-card .rnote{font-size:11px;color:var(--muted);margin-top:7px}
+  .res-card.gap{border-color:rgba(216,69,59,0.35);background:#FDF3F2}.res-card.gap .rnum{color:var(--red)}
+  .efficiency{background:linear-gradient(135deg,rgba(30,111,224,0.05),rgba(108,43,217,0.06));border:1px solid #D9DEF0;border-radius:9px;padding:16px 18px;margin-top:14px}
+  .efficiency .eh{font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:var(--ink);margin-bottom:6px}
+  .efficiency p{font-size:13px;color:var(--ink-soft)}.efficiency b{color:var(--purple)}
+  .priority{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--amber);padding:12px 16px;border-radius:7px;margin-bottom:8px;display:flex;gap:13px;align-items:flex-start}
+  .priority .pnum{font-family:'JetBrains Mono',monospace;color:var(--amber);font-weight:700;flex-shrink:0;font-size:13px}
+  .priority .ptext{font-size:13px;color:var(--ink-soft)}
+  .priority.high{border-left-color:var(--red)}.priority.high .pnum{color:var(--red)}
+  .disclaimer{font-size:11px;color:var(--muted);margin-top:18px;padding:13px 15px;background:var(--tint);border:1px solid var(--border);border-radius:7px;line-height:1.55}
+  .disclaimer b{color:var(--purple)}
+  .report-actions{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .btn-print{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;padding:12px 26px;box-shadow:0 4px 14px rgba(76,43,180,0.28)}.btn-print:hover{filter:brightness(1.08)}
+  .btn-restart{background:#fff;color:var(--muted);border:1px solid var(--border);padding:12px 26px}
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#AAB3C2;text-transform:uppercase;text-align:center}
+  @media print{.step,.nav,.progress,.report-actions{display:none!important}.report{display:block!important}.hero{background:#0B1024!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-inner">
+    <img class="logo" src="zytrion-logo.png" alt="Zytrion Infrastructure Group">
+    <div class="kicker">Transformation Intake · Step One</div>
+    <h1>Build it <span class="grad">the right way.</span><br>Starting with the truth.</h1>
+    <p>A guided current-state audit. Every answer is read back to you in real time — so by the end you have a scored readout, a recommended team structure, and a priority list. About 5 minutes.</p>
+  </div>
+  <div class="hairline"></div>
+</div>
+
+<div class="wrap">
+  <div class="progress" id="progress"></div>
+
+  <div class="step active" data-step="0">
+    <div class="step-label">Before we start</div>
+    <h2>This is step one of a transformation</h2>
+    <p class="sub">Answer from how things actually run today — workarounds and messy parts included. The gaps you describe are exactly what the new system is built to close.</p>
+    <div class="field"><label>Who's completing this?</label><input type="text" id="respondent" placeholder="Name + role (e.g. Jordan, COO)"></div>
+    <div class="field"><label>Today's date</label><input type="text" id="adate" placeholder="MM / DD / YYYY"></div>
+    <div class="feedback" id="fb-0"><div class="fbtitle">Logged</div><div class="fbwhat">Good. This becomes the foundation document the build is scoped against.</div><div class="fbnext">Next: <b>the backlog</b> — the single most important number for a fast-scaled operation.</div></div>
+    <div class="nav"><span></span><button class="btn-next" onclick="next(0)">Begin &rarr;</button></div>
+  </div>
+
+  <div class="step" data-step="1">
+    <div class="step-label">Section 01 · The core numbers</div>
+    <h2>Backlog &amp; throughput by track</h2>
+    <p class="sub">Backlog &divide; monthly throughput = how many months underwater each track is. Estimates are fine.</p>
+    <div class="track-block new"><div class="tname">Start a Business — New Formation</div><div class="row"><div><div class="col-label">Open backlog</div><input type="number" id="bl_new" placeholder="0"></div><div><div class="col-label">Completed / month</div><input type="number" id="tp_new" placeholder="0"></div></div></div>
+    <div class="track-block conv"><div class="tname">Convert My Business — Conversion</div><div class="row"><div><div class="col-label">Open backlog</div><input type="number" id="bl_conv" placeholder="0"></div><div><div class="col-label">Completed / month</div><input type="number" id="tp_conv" placeholder="0"></div></div></div>
+    <div class="track-block wy"><div class="tname">Wyoming Stack — parent / holding / REIT</div><div class="row"><div><div class="col-label">Open backlog (stacks)</div><input type="number" id="bl_wy" placeholder="0"></div><div><div class="col-label">Completed / month</div><input type="number" id="tp_wy" placeholder="0"></div></div></div>
+    <div class="feedback" id="fb-1"></div>
+    <div class="nav"><button class="btn-back" onclick="back(1)">&larr; Back</button><button class="btn-next" onclick="next(1)">Continue &rarr;</button></div>
+  </div>
+
+  <div class="step" data-step="2">
+    <div class="step-label">Section 02 · Who the clients are</div>
+    <h2>Client mix &amp; education need</h2>
+    <p class="sub">This decides which education track and tax path each client gets.</p>
+    <div class="field"><label>Roughly what % are entrepreneurs (first-time owners)?</label><div class="hint">The rest are SMEs — existing operators who need restructuring, not basics.</div><input type="number" id="pct_ent" placeholder="e.g. 60" max="100"></div>
+    <div class="field"><label>What % take the Legacy Builder package (the tax-handoff trigger)?</label><input type="number" id="pct_legacy" placeholder="e.g. 40" max="100"></div>
+    <div class="field"><label>How many active states do you file in?</label><input type="number" id="num_states" placeholder="e.g. 18"></div>
+    <div class="feedback" id="fb-2"></div>
+    <div class="nav"><button class="btn-back" onclick="back(2)">&larr; Back</button><button class="btn-next" onclick="next(2)">Continue &rarr;</button></div>
+  </div>
+
+  <div class="step" data-step="3">
+    <div class="step-label">Section 03 · The data</div>
+    <h2>Where the truth lives today</h2>
+    <p class="sub">Before tools or automation: is there one reliable record of each client? Everything downstream depends on this.</p>
+    <div class="field"><label>Where does client data actually live today?</label><select id="datahome"><option value="">Select…</option><option value="sheets">Google Sheets, primarily</option><option value="wix">Wix</option><option value="scattered">Scattered across spreadsheets &amp; tools</option><option value="ghl">GHL CRM</option><option value="wp">WordPress</option><option value="other">Other</option></select></div>
+    <div class="field"><label>Confidence in that data's integrity?</label><select id="integrity"><option value="">Select…</option><option value="0">Low — duplicates, gaps, manual entry errors</option><option value="1">Medium — usable but needs cleanup</option><option value="2">High — clean and trusted</option></select></div>
+    <div class="field"><label>Is GHL still in use? If so, what does it do that the website can't?</label><div class="hint">Be specific — this decides whether we keep it, replace it, or consolidate.</div><textarea id="ghl_role" placeholder="e.g. not in use / SMS campaigns / pipelines…"></textarea></div>
+    <div class="feedback" id="fb-3"></div>
+    <div class="nav"><button class="btn-back" onclick="back(3)">&larr; Back</button><button class="btn-next" onclick="next(3)">Continue &rarr;</button></div>
+  </div>
+
+  <div class="step" data-step="4">
+    <div class="step-label">Section 04 · How it runs</div>
+    <h2>Automation &amp; handoff maturity</h2>
+    <p class="sub">Where the operation sits between fully manual and fully automated.</p>
+    <div class="field"><label>How automated is the flow from payment to delivered documents?</label><select id="automation"><option value="">Select…</option><option value="0">Fully manual — people do every step</option><option value="1">Some automation — welcome emails, a few triggers</option><option value="2">Documents auto-populate, status updates fire</option><option value="3">Mostly automated end-to-end</option></select></div>
+    <div class="field"><label>How does the tax team learn about a new client?</label><select id="taxhandoff"><option value="">Select…</option><option value="0">Inconsistent — clients fall through the gap</option><option value="1">Manual — someone remembers to send it over</option><option value="2">Automatic — packet fires at delivery</option></select></div>
+    <div class="field"><label>How is the EIN obtained, and is it kept with formation?</label><select id="ein"><option value="">Select…</option><option value="0">Ad hoc — no set owner or cadence</option><option value="1">One person, one-per-day, tracked loosely</option><option value="2">Owned by formation, logged, gated before closeout</option></select></div>
+    <div class="feedback" id="fb-4"></div>
+    <div class="nav"><button class="btn-back" onclick="back(4)">&larr; Back</button><button class="btn-next" onclick="next(4)">Continue &rarr;</button></div>
+  </div>
+
+  <div class="step" data-step="5">
+    <div class="step-label">Section 05 · The team today</div>
+    <h2>Current headcount by function</h2>
+    <p class="sub">So the report can show current vs recommended staffing against real volume.</p>
+    <div class="triple"><div><div class="col-label">New Formation</div><input type="number" id="hc_new" placeholder="0"></div><div><div class="col-label">Conversion</div><input type="number" id="hc_conv" placeholder="0"></div><div><div class="col-label">Wyoming</div><input type="number" id="hc_wy" placeholder="0"></div></div>
+    <div style="height:14px"></div>
+    <div class="triple"><div><div class="col-label">Client Success</div><input type="number" id="hc_csg" placeholder="0"></div><div><div class="col-label">Admin</div><input type="number" id="hc_admin" placeholder="0"></div><div><div class="col-label">EIN filers</div><input type="number" id="hc_ein" placeholder="0"></div></div>
+    <div style="height:14px"></div>
+    <div class="field"><label>Total people across the whole operation (all roles)?</label><input type="number" id="hc_total" placeholder="e.g. 30"></div>
+    <div class="feedback" id="fb-5"></div>
+    <div class="nav"><button class="btn-back" onclick="back(5)">&larr; Back</button><button class="btn-next" onclick="next(5)">Generate Report &rarr;</button></div>
+  </div>
+
+  <div class="report" id="report">
+    <div class="step-label" style="margin-bottom:10px">Interpretation · Generated from your answers</div>
+    <div class="score-hero"><div class="score-num"><span id="scoreVal">0</span><span class="of"> / 100</span></div><div class="score-band" id="scoreBand"></div><div class="score-cap" id="scoreCap"></div></div>
+    <div class="rsec"><h3>Backlog pressure by track</h3><div id="backlogReadout"></div></div>
+    <div class="rsec"><h3>Recommended staffing vs today</h3><div class="res-grid" id="resGrid"></div><div class="efficiency" id="efficiency"></div><div class="disclaimer" id="einNote"></div></div>
+    <div class="rsec"><h3>Priority order for the build</h3><div id="priorityList"></div></div>
+    <div class="disclaimer"><b>Capacity assumptions used</b> (calibrate with real data): New Formation ~50/mo manual · ~90/mo automated. Conversion ~30/mo manual · ~45/mo automated. Wyoming ~20 stacks/mo manual · ~28 automated. Client Success ~100 active clients each. EIN throughput is capped by the IRS one-per-responsible-party-per-day rule and scales by adding filers, not general headcount.</div>
+    <div class="disclaimer" id="copyNote" style="display:none"></div>
+    <div class="report-actions"><button class="btn-print" onclick="window.print()">Print / Save as PDF</button><button class="btn-restart" onclick="location.reload()">Start over</button></div>
+  </div>
+  <footer>&copy; Zytrion Infrastructure Group &mdash; a DBA of Norrils Signature Consulting &middot; Proprietary &amp; confidential</footer>
+</div>
+<script>
+const TOTAL_STEPS=6;
+const prog=document.getElementById('progress');
+for(let i=0;i<TOTAL_STEPS;i++){const d=document.createElement('div');d.className='pstep'+(i===0?' active':'');prog.appendChild(d);}
+function setProgress(step){document.querySelectorAll('.pstep').forEach((p,i)=>{p.className='pstep'+(i<step?' done':i===step?' active':'');});}
+const val=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+const num=id=>{const v=parseFloat(val(id));return isNaN(v)?0:v;};
+function showStep(n){document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));const el=document.querySelector('.step[data-step="'+n+'"]');if(el)el.classList.add('active');setProgress(n);window.scrollTo({top:0,behavior:'smooth'});}
+function fb(step,html){const f=document.getElementById('fb-'+step);f.innerHTML=html;f.classList.add('show');}
+function next(step){
+  if(step===1){const mu=(bl,tp)=>tp>0?(bl/tp).toFixed(1):(bl>0?'\u221e':'0');const mN=mu(num('bl_new'),num('tp_new')),mC=mu(num('bl_conv'),num('tp_conv')),mW=mu(num('bl_wy'),num('tp_wy'));const arr=[['New',mN],['Conversion',mC],['Wyoming',mW]].filter(x=>x[1]!=='0').sort((a,b)=>(b[1]==='\u221e'?999:+b[1])-(a[1]==='\u221e'?999:+a[1]));const worst=arr[0];fb(1,`<div class="fbtitle">Backlog mapped</div><div class="fbwhat">Months underwater — New: <b>${mN}</b> · Conversion: <b>${mC}</b> · Wyoming: <b>${mW}</b>. ${worst?`<b>${worst[0]}</b> carries the most pressure.`:''}</div><div class="fbnext">Next: <b>client mix</b> — sets education tracks and tax routing.</div>`);}
+  if(step===2){const ent=num('pct_ent');const sme=Math.max(0,100-ent);fb(2,`<div class="fbtitle">Mix captured</div><div class="fbwhat">~${ent}% entrepreneurs (the "how business works" track) and ~${sme}% SMEs (the "how to operate / restructure" track), across <b>${num('num_states')||'?'}</b> states — that's your state-variation scope.</div><div class="fbnext">Next: <b>the data</b> — is there one reliable source of truth?</div>`);}
+  if(step===3){const dh=val('datahome');const integ=parseInt(val('integrity'));const weak=(dh==='sheets'||dh==='wix'||dh==='scattered'||integ===0);fb(3,`<div class="fbtitle">Data state noted</div><div class="fbwhat">${weak?'There\u2019s <b>no single reliable source of truth</b> right now — data sits in spreadsheets/Wix with integrity risk. This becomes priority one: every automation downstream needs clean, trusted records to run on.':'A workable record exists — the build can connect to it rather than rebuild it.'}</div><div class="fbnext">Next: <b>automation maturity</b> — how much runs without a human today.</div>`);}
+  if(step===4){fb(4,`<div class="fbtitle">Maturity scored</div><div class="fbwhat">This sets the automation multiplier in your staffing math and flags whether clients are leaking at the tax handoff.</div><div class="fbnext">Last step: <b>current team</b>, then your full readout generates.</div>`);}
+  if(step===5){buildReport();return;}
+  const f=document.getElementById('fb-'+step);if(f)f.classList.add('show');
+  setTimeout(()=>showStep(step+1),step===0?700:1400);
+}
+function back(step){showStep(step-1);}
+function buildReport(){
+  const bl={new:num('bl_new'),conv:num('bl_conv'),wy:num('bl_wy')};
+  const tp={new:num('tp_new'),conv:num('tp_conv'),wy:num('tp_wy')};
+  const auto=parseInt(val('automation'));const automated=!isNaN(auto)&&auto>=2;
+  const integ=parseInt(val('integrity'));const integScore=isNaN(integ)?0:integ;
+  const tax=parseInt(val('taxhandoff'));const ein=parseInt(val('ein'));const dh=val('datahome');
+  const mu=t=>tp[t]>0?bl[t]/tp[t]:(bl[t]>0?99:0);
+  const muN=mu('new'),muC=mu('conv'),muW=mu('wy');const worstMu=Math.max(muN,muC,muW);
+  let score=100;
+  if(worstMu>=99)score-=22;else if(worstMu>3)score-=22;else if(worstMu>2)score-=15;else if(worstMu>1)score-=8;
+  score-=(isNaN(auto)?20:[20,14,6,0][auto]);score-=[16,8,0][integScore];
+  score-=(isNaN(tax)?14:[14,8,0][tax]);score-=(isNaN(ein)?10:[10,5,0][ein]);
+  score=Math.max(5,Math.min(100,Math.round(score)));
+  document.getElementById('scoreVal').textContent=score;
+  const band=document.getElementById('scoreBand'),cap=document.getElementById('scoreCap');let bt,bc,ct;
+  if(score>=75){bt='SOLID FOUNDATION';bc='#2FA36B';ct='Healthier than the growth rate would suggest. The build is about tightening and scaling, not rescuing.';}
+  else if(score>=50){bt='SCALING UNDER STRAIN';bc='#E0972B';ct='Throughput is roughly keeping pace but cracks are showing. Quick wins first, then systematize before the next surge.';}
+  else{bt='OUTGROWING ITS PROCESSES';bc='#D8453B';ct='Volume has outrun the infrastructure. Priority is stabilizing delivery and closing leaks before automating anything fancy.';}
+  band.textContent=bt;band.style.color=bc;cap.textContent=ct;
+  const br=document.getElementById('backlogReadout');
+  const rows=[['New Formation',muN,'#1E6FE0'],['Conversion',muC,'#6C2BD9'],['Wyoming Stack',muW,'#1FA8C4']];
+  br.innerHTML=rows.map(([n,m,col])=>{const pct=Math.min(100,(m/4)*100);const disp=m>=99?'no throughput':m.toFixed(1)+' mo';const bc=m>3?'#D8453B':m>2?'#E0972B':m>1?col:'#2FA36B';return `<div class="track-readout"><div class="tlabel">${n}</div><div class="bar-wrap"><div class="bar-fill" style="width:${m>=99?100:Math.max(pct,14)}%;background:${bc}"><span>${disp}</span></div></div><div class="tval">underwater</div></div>`;}).join('');
+  const capN=automated?90:50,capC=automated?45:30,capW=automated?28:20;
+  const need=(t,c)=>t>0?Math.max(1,Math.ceil(t/c)):0;
+  const recN=need(tp.new,capN),recC=need(tp.conv,capC),recW=need(tp.wy,capW);
+  const recCSG=Math.max(1,Math.ceil((tp.new+tp.conv+tp.wy)/100));
+  const have={new:num('hc_new'),conv:num('hc_conv'),wy:num('hc_wy'),csg:num('hc_csg')};
+  const rg=document.getElementById('resGrid');
+  const card=(role,rec,h,note)=>{const gap=h>0&&h<rec;return `<div class="res-card${gap?' gap':''}"><div class="rrole">${role}</div><div class="rnum">${rec}<small> recommended${h>0?' · '+h+' today':''}</small></div><div class="rnote">${gap?'\u26a0 understaffed for current throughput':note}</div></div>`;};
+  rg.innerHTML=card('New Formation',recN,have.new,'at '+capN+'/mo each')+card('Conversion',recC,have.conv,'at '+capC+'/mo each')+card('Wyoming Stack',recW,have.wy,'at '+capW+' stacks/mo each')+card('Client Success',recCSG,have.csg,'\u2248100 active clients each');
+  const recCore=recN+recC+recW+recCSG;const total=num('hc_total');const eff=document.getElementById('efficiency');
+  if(total>0){const ratio=total/Math.max(1,recCore);let msg;
+    if(ratio>=1.8)msg=`Current team is <b>${total} people</b>; the formation + client-success core needs roughly <b>${recCore}</b> at automated capacity. That gap is the strongest ROI story for the build — much of today's headcount is absorbing manual work a system would handle, freeing people for higher-value roles or reducing cost as you scale.`;
+    else if(ratio>=1.2)msg=`Current team is <b>${total}</b>; the automated core needs about <b>${recCore}</b>. There's meaningful slack to redeploy as automation comes online.`;
+    else msg=`Current team is <b>${total}</b> against a recommended core of ~<b>${recCore}</b> — lean. The build is about capacity and continuity, not cost-cutting.`;
+    eff.innerHTML=`<div class="eh">Where the headcount story lands</div><p>${msg}</p>`;}else{eff.style.display='none';}
+  const totalEnt=tp.new+tp.conv+tp.wy;const einFilers=Math.max(1,Math.ceil((tp.new+tp.conv+tp.wy*3)/22));
+  document.getElementById('einNote').innerHTML=`<b>EIN bottleneck:</b> ~${totalEnt} entities/month across tracks (Wyoming stacks = 3 EINs each). Because the IRS allows one EIN per responsible party per day, you need roughly <b style="color:#4A1E96">${einFilers}</b> parallel filers (\u224822 business days/mo) to keep pace. Today: ${num('hc_ein')||'?'}.`;
+  const P=[];
+  if(integScore===0||dh==='sheets'||dh==='wix'||dh==='scattered')P.push(['high','Establish one clean source of truth and migrate off scattered spreadsheets/Wix — every automation depends on trusted records.']);
+  if(worstMu>2)P.push(['high','Stabilize the most-underwater track before building anything new — add a filer or temporarily reroute capacity.']);
+  if(isNaN(tax)||tax<2)P.push([tax===0?'high':'',(tax===0?'Clients are leaking at the tax handoff — every miss is forfeited first-year-free revenue. ':'')+'Automate the tax-handoff packet to fire on package delivery.']);
+  if(isNaN(auto)||auto<2)P.push(['','Build the document engine to auto-populate Articles & Operating Agreements (bylaws, consent and WY RA templates already exist — extend them).']);
+  P.push(['','Stand up the qualifying assessment + routing so intake self-sorts by track, archetype and state.']);
+  P.push(['','Move Client Success from a single person to a pod model so white-glove survives scale.']);
+  if(isNaN(ein)||ein<2)P.push(['','Move EIN ownership into formation with a logged daily cadence and a closeout gate.']);
+  P.push(['','Bake in the guardrails — human sign-off before filing, client-visible status, audit trail — as white-glove and transparency made operational.']);
+  document.getElementById('priorityList').innerHTML=P.slice(0,7).map((p,i)=>`<div class="priority ${p[0]}"><div class="pnum">${String(i+1).padStart(2,'0')}</div><div class="ptext">${p[1]}</div></div>`).join('');
+  const summary =
+`ZYTRION — OPERATIONAL READINESS ASSESSMENT (SUBMISSION)
+Respondent: ${val('respondent')||'(not given)'}
+Date: ${val('adate')||'(not given)'}
+
+SCORE: ${score}/100 — ${bt}
+
+BACKLOG (months underwater):
+  New Formation: ${muN>=99?'no throughput':muN.toFixed(1)+' mo'}  (backlog ${num('bl_new')}, ${num('tp_new')}/mo)
+  Conversion:    ${muC>=99?'no throughput':muC.toFixed(1)+' mo'}  (backlog ${num('bl_conv')}, ${num('tp_conv')}/mo)
+  Wyoming:       ${muW>=99?'no throughput':muW.toFixed(1)+' mo'}  (backlog ${num('bl_wy')}, ${num('tp_wy')}/mo)
+
+CLIENT MIX: ${num('pct_ent')}% entrepreneurs / ${Math.max(0,100-num('pct_ent'))}% SME · Legacy Builder ${num('pct_legacy')}% · ${num('num_states')} states
+
+DATA: lives in "${val('datahome')||'?'}", integrity ${['Low','Medium','High'][integScore]||'?'} · GHL note: ${val('ghl_role')||'(blank)'}
+
+MATURITY: automation lvl ${val('automation')||'?'} · tax handoff lvl ${val('taxhandoff')||'?'} · EIN lvl ${val('ein')||'?'}
+
+TEAM TODAY: New ${num('hc_new')} · Conv ${num('hc_conv')} · WY ${num('hc_wy')} · ClientSuccess ${num('hc_csg')} · Admin ${num('hc_admin')} · EIN filers ${num('hc_ein')} · TOTAL ${num('hc_total')}
+
+RECOMMENDED CORE: New ${recN} · Conv ${recC} · WY ${recW} · ClientSuccess ${recCSG} (= ${recCore}) · EIN filers needed ~${einFilers}`;
+  sendCopy(summary);
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  setProgress(TOTAL_STEPS);document.getElementById('report').classList.add('active');window.scrollTo({top:0,behavior:'smooth'});
+}
+async function sendCopy(message){
+  const ACCESS_KEY="YOUR-WEB3FORMS-ACCESS-KEY";   // <-- paste your free key from web3forms.com between the quotes
+  const note=document.getElementById('copyNote');
+  if(ACCESS_KEY.indexOf("YOUR-")===0){
+    if(note){note.style.display='block';note.innerHTML='<b>To get a copy by email:</b> create a free key at web3forms.com (enter your email, copy the key it sends), paste it into the ACCESS_KEY line in this file, and re-upload. Until then, use Print / Save as PDF below.';}
+    return;
+  }
+  try{
+    const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:ACCESS_KEY,subject:"New Zytrion Readiness Assessment submitted",from_name:"Zytrion Assessment",message})});
+    if(note){note.style.display='block';note.innerHTML=r.ok?'\u2713 A copy of this report has been emailed to you.':'Could not send the email copy this time — use Print / Save as PDF below.';}
+  }catch(e){ if(note){note.style.display='block';note.innerHTML='Could not send the email copy this time — use Print / Save as PDF below.';} }
+}
+</script>
+</body>
+</html>
